@@ -14,7 +14,7 @@ dependencies {
 
     // TODO add xdg-desktop-portal dependency
     implementation("com.github.hypfvieh:dbus-java:3.3.1")
-    //implementation("com.github.hypfview:dbus-java-transport-jnr-unixsocket:4.0.0")
+    implementation("com.github.hypfview:dbus-java-transport-jnr-unixsocket:4.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.0")
 
     kapt(libs.autoservice.processor)

@@ -22,10 +22,6 @@ class XdgThemeMonitorService : ThemeMonitorService {
         FreedesktopInterface::class.java
     )
 
-    init {
-        XdgLibrary.get()
-    }
-
     override val isDarkThemeEnabled: Boolean
         get() {
             val theme = freedesktopInterface.read("org.freedesktop.appearance", "color-scheme")

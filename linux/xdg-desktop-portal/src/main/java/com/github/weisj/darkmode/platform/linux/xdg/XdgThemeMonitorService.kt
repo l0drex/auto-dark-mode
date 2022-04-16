@@ -14,6 +14,15 @@ interface FreedesktopInterface : DBusInterface {
     fun Read(namespace: String, key: String): Variant <*>
 }
 
+/**
+ * Gets the active theme from the xdg-desktop portal via the color-scheme preference.
+ *
+ * @property themeMode Number that describes the active theme.
+ * Values:
+ *  0: no preference
+ *  1: dark
+ *  2: light
+ */
 class XdgThemeMonitorService : ThemeMonitorService {
     private val connection = DBusConnection.getConnection(DBusConnection.DBusBusType.SESSION)
     private val freedesktopInterface : FreedesktopInterface = connection.getRemoteObject(
@@ -35,7 +44,9 @@ class XdgThemeMonitorService : ThemeMonitorService {
     override val isHighContrastEnabled: Boolean
         get() = TODO("No xdg preference for that available")
     override val isSupported: Boolean
-        get() = TODO("Not yet implemented")
+        get() {
+            return themeMode != 0
+        }
 
     override fun createEventHandler(callback: () -> Unit): NativePointer? {
         return NativePointer(XdgNative.createEventHandler(callback))

@@ -11,7 +11,7 @@ import org.freedesktop.dbus.types.Variant
 
 @DBusInterfaceName("org.freedesktop.portal.Settings")
 interface FreedesktopInterface : DBusInterface {
-    fun Read(namespace: String, key: String): Variant <*>
+    fun Read(namespace: String, key: String): Variant<*>
 }
 
 /**
@@ -25,7 +25,7 @@ interface FreedesktopInterface : DBusInterface {
  */
 class XdgThemeMonitorService : ThemeMonitorService {
     private val connection = DBusConnection.getConnection(DBusConnection.DBusBusType.SESSION)
-    private val freedesktopInterface : FreedesktopInterface = connection.getRemoteObject(
+    private val freedesktopInterface: FreedesktopInterface = connection.getRemoteObject(
         "org.freedesktop.portal.Desktop",
         "/org/freedesktop/portal/desktop",
         FreedesktopInterface::class.java
@@ -42,7 +42,10 @@ class XdgThemeMonitorService : ThemeMonitorService {
             return themeMode != 2
         }
     override val isHighContrastEnabled: Boolean
-        get() = TODO("No xdg preference for that available")
+        get() {
+            // TODO No xdg preference for that available
+            return false
+        }
     override val isSupported: Boolean
         get() {
             return themeMode != 0

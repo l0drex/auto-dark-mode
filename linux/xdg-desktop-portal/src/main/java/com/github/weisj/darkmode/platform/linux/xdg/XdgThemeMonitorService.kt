@@ -7,11 +7,14 @@ import com.github.weisj.darkmode.platform.ThemeMonitorService
 import org.freedesktop.dbus.annotations.DBusInterfaceName
 import org.freedesktop.dbus.connections.impl.DBusConnection
 import org.freedesktop.dbus.interfaces.DBusInterface
+import org.freedesktop.dbus.messages.DBusSignal
 import org.freedesktop.dbus.types.Variant
 
 @DBusInterfaceName("org.freedesktop.portal.Settings")
 interface FreedesktopInterface : DBusInterface {
     fun Read(namespace: String, key: String): Variant<*>
+
+    class SettingChanged(objectpath: String, vararg args: DBusInterface) : DBusSignal(objectpath, *args)
 }
 
 /**
@@ -30,6 +33,7 @@ class XdgThemeMonitorService : ThemeMonitorService {
         "/org/freedesktop/portal/desktop",
         FreedesktopInterface::class.java
     )
+    private var eventHandler: (() -> Unit)? = null
 
     private val themeMode: Number
         get() {
@@ -43,7 +47,7 @@ class XdgThemeMonitorService : ThemeMonitorService {
         }
     override val isHighContrastEnabled: Boolean
         get() {
-            // TODO No xdg preference for that available
+            // No xdg preference for that available
             return false
         }
     override val isSupported: Boolean
@@ -51,16 +55,25 @@ class XdgThemeMonitorService : ThemeMonitorService {
             return themeMode != 0
         }
 
+    init {
+        connection.addSigHandler(FreedesktopInterface.SettingChanged::class.java) {
+            fun FreedesktopInterface.SettingChanged.handle() {
+                eventHandler?.invoke()
+            }
+        }
+    }
+
     override fun createEventHandler(callback: () -> Unit): NativePointer? {
-        return NativePointer(XdgNative.createEventHandler(callback))
+        if (eventHandler != null) {
+            throw IllegalStateException("There is already an eventhandler initialized.")
+        }
+
+        eventHandler = callback
+        return NativePointer(0L)
     }
 
     override fun deleteEventHandler(eventHandle: NativePointer) {
-        XdgNative.deleteEventHandler(eventHandle.pointer)
-    }
-
-    override fun install() {
-        XdgNative.init()
+        eventHandler = null
     }
 
     private fun recursiveVariantValue(variant: Variant<*>): Any {

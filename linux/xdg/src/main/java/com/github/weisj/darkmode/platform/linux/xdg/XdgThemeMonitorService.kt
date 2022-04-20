@@ -28,7 +28,7 @@ class XdgThemeMonitorService : ThemeMonitorService {
     private val themeMode: Number
         get() {
             val theme = freedesktopInterface.Read("org.freedesktop.appearance", "color-scheme")
-            return recursiveVariantValue(theme) as Number
+            return (recursiveVariantValue(theme) as Number).toInt()
         }
 
     override val isDarkThemeEnabled: Boolean

@@ -67,6 +67,10 @@ class XdgThemeMonitorService : ThemeMonitorService, DBusSigHandler<FreedesktopIn
         eventHandler?.invoke()
     }
 
+    /**
+     * Unpacks a Variant recursively and returns the inner value.
+     * @see Variant
+     */
     private fun recursiveVariantValue(variant: Variant<*>): Any {
         val value = variant.value
         return if (value !is Variant<*>) value else recursiveVariantValue(value)

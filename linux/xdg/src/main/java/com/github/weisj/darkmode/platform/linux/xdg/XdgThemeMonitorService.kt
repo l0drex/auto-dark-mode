@@ -5,6 +5,7 @@ package com.github.weisj.darkmode.platform.linux.xdg
 import com.github.weisj.darkmode.platform.NativePointer
 import com.github.weisj.darkmode.platform.ThemeMonitorService
 import org.freedesktop.dbus.connections.impl.DBusConnection
+import org.freedesktop.dbus.interfaces.DBusSigHandler
 import org.freedesktop.dbus.types.Variant
 
 /**
@@ -16,7 +17,7 @@ import org.freedesktop.dbus.types.Variant
  *  1: dark
  *  2: light
  */
-class XdgThemeMonitorService : ThemeMonitorService {
+class XdgThemeMonitorService : ThemeMonitorService, DBusSigHandler<FreedesktopInterface.SettingChanged> {
     private val connection = DBusConnection.getConnection(DBusConnection.DBusBusType.SESSION)
     private val freedesktopInterface: FreedesktopInterface = connection.getRemoteObject(
         "org.freedesktop.portal.Desktop",
@@ -46,11 +47,7 @@ class XdgThemeMonitorService : ThemeMonitorService {
         }
 
     init {
-        connection.addSigHandler(FreedesktopInterface.SettingChanged::class.java) {
-            fun FreedesktopInterface.SettingChanged.handle() {
-                eventHandler?.invoke()
-            }
-        }
+        connection.addSigHandler(FreedesktopInterface.SettingChanged::class.java, this)
     }
 
     override fun createEventHandler(callback: () -> Unit): NativePointer? {
@@ -64,6 +61,10 @@ class XdgThemeMonitorService : ThemeMonitorService {
 
     override fun deleteEventHandler(eventHandle: NativePointer) {
         eventHandler = null
+    }
+
+    override fun handle(s: FreedesktopInterface.SettingChanged?) {
+        eventHandler?.invoke()
     }
 
     private fun recursiveVariantValue(variant: Variant<*>): Any {

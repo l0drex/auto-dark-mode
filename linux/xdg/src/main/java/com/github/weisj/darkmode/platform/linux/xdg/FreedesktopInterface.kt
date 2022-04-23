@@ -9,5 +9,5 @@ import org.freedesktop.dbus.types.Variant
 interface FreedesktopInterface : DBusInterface {
     fun Read(namespace: String, key: String): Variant<*>
 
-    class SettingChanged(objectpath: String, vararg args: DBusInterface) : DBusSignal(objectpath, *args)
+    class SettingChanged(objectpath: String, namespace: String, key: String, value: Variant<Any>) : DBusSignal(objectpath, namespace, key, value)
 }

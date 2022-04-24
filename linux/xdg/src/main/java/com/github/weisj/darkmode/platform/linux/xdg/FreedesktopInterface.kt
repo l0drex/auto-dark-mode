@@ -9,5 +9,9 @@ import org.freedesktop.dbus.types.Variant
 interface FreedesktopInterface : DBusInterface {
     fun Read(namespace: String, key: String): Variant<*>
 
-    class SettingChanged(objectpath: String, namespace: String, key: String, value: Variant<Any>) : DBusSignal(objectpath, namespace, key, value)
+    class SettingChanged(objectpath: String, namespace: String, key: String, value: Variant<Any>) :
+        DBusSignal(objectpath, namespace, key, value) {
+        val colorSchemeChanged: Boolean =
+            namespace == "org.freedesktop.appearance" && key == "color-scheme"
+    }
 }

@@ -29,7 +29,7 @@ class XdgThemeMonitorService : ThemeMonitorService, DBusSigHandler<FreedesktopIn
     private val themeMode: Number
         get() {
             val theme = freedesktopInterface.Read("org.freedesktop.appearance", "color-scheme")
-            return (recursiveVariantValue(theme) as Number).toInt()
+            return recursiveVariantValue(theme) as Int
         }
 
     override val isDarkThemeEnabled: Boolean
@@ -63,8 +63,10 @@ class XdgThemeMonitorService : ThemeMonitorService, DBusSigHandler<FreedesktopIn
         eventHandler = null
     }
 
-    override fun handle(s: FreedesktopInterface.SettingChanged?) {
-        eventHandler?.invoke()
+    override fun handle(signal: FreedesktopInterface.SettingChanged) {
+        if (signal.colorSchemeChanged) {
+            eventHandler?.invoke()
+        }
     }
 
     /**

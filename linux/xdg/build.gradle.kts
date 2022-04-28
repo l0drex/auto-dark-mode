@@ -1,17 +1,15 @@
 plugins {
     java
     kotlin("jvm")
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
 
 dependencies {
     implementation(projects.autoDarkModeBase)
-    implementation(libs.darklaf.nativeUtils)
+    implementation(libs.linux.dbus)
+    implementation(libs.kotlinx.coroutines.core.jvm)
 
-    implementation("com.github.hypfvieh:dbus-java:3.3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.1")
-
-    kapt(libs.autoservice.processor)
+    ksp(libs.autoservice.processor)
     compileOnly(libs.autoservice.annotations)
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.20")
+    compileOnly(kotlin("stdlib-jdk8"))
 }

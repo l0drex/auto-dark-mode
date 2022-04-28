@@ -9,6 +9,10 @@ darklaf = "2.7.2"
 autoservice-annotations = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoservice" }
 autoservice-processor = { module = "dev.zacsweers.autoservice:auto-service-ksp", version.ref = "autoserviceKsp" }
 darklaf-nativeUtils = { module = "com.github.weisj:darklaf-native-utils", version.ref = "darklaf" }
+kotlinx-coroutines-core-jvm = {module ="org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version ="1.6.1"}
+
+# Linux frameworks
+linux-dbus = { module = "com.github.hypfvieh:dbus-java", version = "3.3.1" }
 
 # MacOS frameworks
 macos-appKit = { module = "dev.nokee.framework:AppKit", version.ref = "macOSFramework" }

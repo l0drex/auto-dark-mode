@@ -29,17 +29,18 @@ import com.github.weisj.darkmode.platform.Notifications
 import com.github.weisj.darkmode.platform.NullThemeMonitorService
 import com.github.weisj.darkmode.platform.ThemeMonitorService
 import com.github.weisj.darkmode.platform.linux.gnome.GnomeThemeMonitorService
-import com.github.weisj.darkmode.platform.linux.xdg.FreedesktopInterface
-import com.github.weisj.darkmode.platform.linux.xdg.ThemeMode
 import com.github.weisj.darkmode.platform.linux.xdg.XdgThemeMonitorService
 
 class LinuxThemeMonitorService : ThemeMonitorService by if (LibraryUtil.isGnome) {
     GnomeThemeMonitorService()
-} else if (FreedesktopInterface.theme != ThemeMode.ERROR) {
-    XdgThemeMonitorService()
 } else {
-    Notifications.dispatchNotification(
-        message = "This plugin currently only supports Gnome and desktop environments that support the color-scheme preference on Linux."
-    )
-    NullThemeMonitorService()
+    val xdgThemeMonitorService = XdgThemeMonitorService()
+    if (xdgThemeMonitorService.isSupported) {
+        xdgThemeMonitorService
+    } else {
+        Notifications.dispatchNotification(
+            message = "This plugin currently only supports Gnome and desktop environments that support the color-scheme preference on Linux."
+        )
+        NullThemeMonitorService()
+    }
 }

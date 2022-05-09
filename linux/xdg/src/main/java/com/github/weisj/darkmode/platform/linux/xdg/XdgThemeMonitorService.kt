@@ -7,21 +7,22 @@ import com.github.weisj.darkmode.platform.ThemeMonitorService
 import org.freedesktop.dbus.interfaces.DBusSigHandler
 
 class XdgThemeMonitorService : ThemeMonitorService {
+    private val freedesktopConnection = FreedesktopConnection()
     private val sigHandler = SigHandler()
-    override val isDarkThemeEnabled: Boolean = FreedesktopInterface.theme == ThemeMode.DARK
-    override val isSupported: Boolean = FreedesktopInterface.theme != ThemeMode.ERROR
+    override val isDarkThemeEnabled: Boolean = freedesktopConnection.theme == ThemeMode.DARK
+    override val isSupported: Boolean = freedesktopConnection.theme != ThemeMode.ERROR
     override val isHighContrastEnabled: Boolean = false  // No xdg preference for that available
 
     override fun createEventHandler(callback: () -> Unit): NativePointer? {
         check(sigHandler.eventHandler == null) { "Event handler already initialized" }
 
-        FreedesktopInterface.addSettingChangedHandler(sigHandler)
+        freedesktopConnection.addSettingChangedHandler(sigHandler)
         sigHandler.eventHandler = callback
         return NativePointer(0L)
     }
 
     override fun deleteEventHandler(eventHandle: NativePointer) {
-        FreedesktopInterface.removeSettingChangedHandler(sigHandler)
+        freedesktopConnection.removeSettingChangedHandler(sigHandler)
         sigHandler.eventHandler = null
     }
 

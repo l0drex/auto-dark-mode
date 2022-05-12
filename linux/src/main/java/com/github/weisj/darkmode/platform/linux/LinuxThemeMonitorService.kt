@@ -28,19 +28,21 @@ import com.github.weisj.darkmode.platform.LibraryUtil
 import com.github.weisj.darkmode.platform.Notifications
 import com.github.weisj.darkmode.platform.NullThemeMonitorService
 import com.github.weisj.darkmode.platform.ThemeMonitorService
-import com.github.weisj.darkmode.platform.linux.gnome.GnomeThemeMonitorService
+import com.github.weisj.darkmode.platform.linux.gtk.GtkThemeMonitorService
 import com.github.weisj.darkmode.platform.linux.xdg.XdgThemeMonitorService
 
-class LinuxThemeMonitorService : ThemeMonitorService by if (LibraryUtil.isGnome) {
-    GnomeThemeMonitorService()
-} else {
-    val xdgThemeMonitorService = XdgThemeMonitorService()
-    if (xdgThemeMonitorService.isSupported) {
-        xdgThemeMonitorService
-    } else {
+class LinuxThemeMonitorService : ThemeMonitorService by createCompatibleMonitorService()
+
+private fun createCompatibleMonitorService(): ThemeMonitorService {
+    if (LibraryUtil.isGtk) return GtkThemeMonitorService()
+    else {
+        val xdgThemeMonitorService = XdgThemeMonitorService()
+        if (xdgThemeMonitorService.isSupported) {
+            return xdgThemeMonitorService
+        }
         Notifications.dispatchNotification(
-            message = "This plugin currently only supports Gnome and desktop environments that support the color-scheme preference on Linux."
+            message = "This plugin currently only supports Gtk based desktop environments and those that support the color-scheme preference on Linux."
         )
-        NullThemeMonitorService()
+        return NullThemeMonitorService()
     }
 }

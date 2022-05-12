@@ -9,6 +9,7 @@ enum class ThemeMode {
     LIGHT, DARK, ERROR
 }
 
+@Suppress("FunctionName")
 @DBusInterfaceName("org.freedesktop.portal.Settings")
 interface FreedesktopInterface : DBusInterface {
     companion object {

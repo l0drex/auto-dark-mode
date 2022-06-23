@@ -6,7 +6,7 @@ import org.freedesktop.dbus.messages.DBusSignal
 import org.freedesktop.dbus.types.Variant
 
 enum class ThemeMode {
-    LIGHT, DARK, ERROR
+    ERROR, DARK, LIGHT
 }
 
 @Suppress("FunctionName")
